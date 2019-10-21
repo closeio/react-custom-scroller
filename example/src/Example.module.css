@@ -1,0 +1,15 @@
+.scroller {
+  max-width: 450px;
+  height: 300px;
+  text-align: justify;
+  padding: 0 16px 0 0;
+}
+
+.content {
+  display: grid;
+  row-gap: 12px;
+}
+
+.content > p {
+  margin: 0;
+}
