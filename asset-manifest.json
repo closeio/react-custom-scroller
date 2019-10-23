@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/react-custom-scroller/static/css/main.e9ef0149.chunk.css",
+    "main.js": "/react-custom-scroller/static/js/main.cd08fe84.chunk.js",
+    "main.js.map": "/react-custom-scroller/static/js/main.cd08fe84.chunk.js.map",
+    "runtime-main.js": "/react-custom-scroller/static/js/runtime-main.e24cc151.js",
+    "runtime-main.js.map": "/react-custom-scroller/static/js/runtime-main.e24cc151.js.map",
+    "static/js/2.95aeb5e0.chunk.js": "/react-custom-scroller/static/js/2.95aeb5e0.chunk.js",
+    "static/js/2.95aeb5e0.chunk.js.map": "/react-custom-scroller/static/js/2.95aeb5e0.chunk.js.map",
+    "index.html": "/react-custom-scroller/index.html",
+    "precache-manifest.185a6c78d638e7eeba5438de2df2ba94.js": "/react-custom-scroller/precache-manifest.185a6c78d638e7eeba5438de2df2ba94.js",
+    "service-worker.js": "/react-custom-scroller/service-worker.js",
+    "static/css/main.e9ef0149.chunk.css.map": "/react-custom-scroller/static/css/main.e9ef0149.chunk.css.map",
+    "static/media/logo.svg": "/react-custom-scroller/static/media/logo.d0a24d1a.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e24cc151.js",
+    "static/js/2.95aeb5e0.chunk.js",
+    "static/css/main.e9ef0149.chunk.css",
+    "static/js/main.cd08fe84.chunk.js"
+  ]
+}
