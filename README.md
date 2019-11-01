@@ -4,6 +4,8 @@
 
 Super simple React component for creating a custom scrollbar cross-browser and cross-devices.
 
+[**Check the live DEMO**](https://closeio.github.io/react-custom-scroller/).
+
 ### <img height="40px" src="./close.svg" />
 
 Interested in working on projects like this? [Close](https://close.com) is looking for [great engineers](https://jobs.close.com) to join our team!
