@@ -1,52 +1,54 @@
 {
   "name": "react-custom-scroller",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Super simple React component for creating a custom scrollbar cross-browser and cross-devices",
   "author": "Vitor Buzinaro <vitor@close.com>",
   "license": "MIT",
   "repository": "closeio/react-custom-scroller",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
-    "build": "rollup -c",
-    "start": "rollup -c -w",
-    "prepare": "yarn build",
+    "setup": "yarn && cd example && yarn && cd ..",
+    "clean": "rm -rf dist",
+    "ts-check": "tsc -p . --noEmit",
+    "lint": "eslint example tsup.config.ts src --ext .js,.ts,.tsx",
+    "format": "prettier --write example src",
+    "test": "jest",
+    "test:coverage": "yarn run test --coverage",
+    "test:watch": "yarn run test --watch",
+    "prebuild": "yarn run clean",
+    "build": "tsup src/index.ts",
+    "prepack": "yarn run ts-check && yarn run lint && yarn run test && yarn run build",
+    "prepare": "yarn run build",
+    "dev:example": "cd example && yarn run dev",
     "deploy": "cd example && yarn && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
   },
   "peerDependencies": {
-    "prop-types": "^15.5.4",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@svgr/rollup": "^4.3.3",
-    "cross-env": "^6.0.3",
-    "eslint": "^6.5.1",
-    "eslint-config-prettier": "^6.4.0",
-    "eslint-plugin-import": "^2.13.0",
-    "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^2.1.2",
-    "gh-pages": "^2.1.1",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
-    "react-scripts": "^3.2.0",
-    "rollup": "^1.25.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-postcss": "^2.0.3",
-    "rollup-plugin-url": "^3.0.0"
+    "@types/jest": "^29.2.3",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "eslint": "^8.28.0",
+    "eslint-config-react-app": "^7.0.1",
+    "gh-pages": "^4.0.0",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.3.1",
+    "prettier": "^2.8.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-jest": "^29.0.3",
+    "tsup": "^6.5.0",
+    "typescript": "^4.9.3"
   },
-  "files": [
-    "dist"
-  ]
+  "engines": {
+    "node": ">=16",
+    "npm": ">=8"
+  }
 }
