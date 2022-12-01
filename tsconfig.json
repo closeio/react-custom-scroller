@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationDir": "types",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "sourceMap": true,
+    "target": "es2016",
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": ["src/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src/*.test.tsx"
+  ]
+}

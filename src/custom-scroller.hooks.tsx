@@ -1,4 +1,15 @@
-import { useLayoutEffect, useRef, useState, useCallback } from 'react';
+import { useLayoutEffect, useEffect, useRef, useState, useCallback } from 'react';
+
+/**
+ * canUseDOM utility to check the current environment (client side, server side)
+ */
+const canUseDOM = () =>
+  !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+
+/**
+ * useSafeLayoutEffect enables us to safely call `useLayoutEffect` on the browser (for SSR reasons)
+ */
+const useSafeLayoutEffect = canUseDOM() ? useLayoutEffect : useEffect;
 
 /**
  * We use a negative right on the content to hide original OS scrollbars
@@ -28,33 +39,37 @@ const SCROLLBAR_WIDTH = OS_SCROLLBAR_WIDTH || 20;
 /**
  * Ported from Vitor's SimpleScrollbar library (vanilla JS):
  * https://github.com/buzinas/simple-scrollbar
- * @param {React.ReactNode} content Used as a dependency to re-run the effect
- * @param {React.MutableRefObject} [customRef]
- * @param {Object} [options={}]
- * @param {boolean} [options.disabled]
  */
-export default function useCustomScroller(
-  content,
-  customRef,
-  { disabled } = {},
+type Options = { disabled?: boolean };
+type MemoizedProps = {
+  clientHeight: number;
+  scrollHeight: number;
+  trackHeight: number;
+};
+export function useCustomScroller(
+  content: React.ReactNode,
+  customRef: React.MutableRefObject<HTMLDivElement | null>,
+  options: Options = {},
 ) {
+  const { disabled } = options;
   const [scrollRatio, setScrollRatio] = useState(1);
   const [isDraggingTrack, setIsDraggingTrack] = useState(false);
-
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
   const scrollerRef = customRef || ref;
-  const trackRef = useRef();
-  const trackAnimationRef = useRef();
-  const memoizedProps = useRef({});
+  const trackRef = useRef<HTMLDivElement>(null);
+  const trackAnimationRef = useRef<number | null>(null);
+  const memoizedProps = useRef<MemoizedProps | null>(null);
 
-  useLayoutEffect(() => {
-    const el = scrollerRef.current;
-    let scrollbarAnimation;
+  useSafeLayoutEffect(() => {
+    const element = scrollerRef.current;
+    if (!element) return;
+    let scrollbarAnimation: number;
 
     const updateScrollbar = () => {
-      cancelAnimationFrame(scrollbarAnimation);
-      scrollbarAnimation = requestAnimationFrame(() => {
-        const { clientHeight, scrollHeight } = el;
+      window.cancelAnimationFrame(scrollbarAnimation);
+      scrollbarAnimation = window.requestAnimationFrame(() => {
+        if (!trackRef.current) return;
+        const { clientHeight, scrollHeight } = element;
         setScrollRatio(clientHeight / scrollHeight);
         memoizedProps.current = {
           clientHeight,
@@ -68,54 +83,56 @@ export default function useCustomScroller(
     updateScrollbar();
 
     return () => {
-      cancelAnimationFrame(scrollbarAnimation);
+      window.cancelAnimationFrame(scrollbarAnimation);
       window.removeEventListener('resize', updateScrollbar);
     };
   }, [scrollerRef, content]);
 
-  useLayoutEffect(() => {
-    if (!disabled) return;
-    const el = scrollerRef.current;
+  useSafeLayoutEffect(() => {
+    const element = scrollerRef.current;
+    if (!element || !disabled) return;
 
-    const onWheel = e => e.preventDefault();
-    el.addEventListener('wheel', onWheel, { passive: false });
+    const onWheel = (event: Event) => event.preventDefault();
+    element.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
-      el.removeEventListener('wheel', onWheel);
+      element.removeEventListener('wheel', onWheel);
     };
   }, [scrollerRef, disabled]);
 
   const onScroll = useCallback(() => {
-    if (scrollRatio === 1) return;
-    const el = scrollerRef.current;
+    const element = scrollerRef.current;
     const track = trackRef.current;
+    if (!element || !track || scrollRatio === 1) return;
 
-    cancelAnimationFrame(trackAnimationRef.current);
+    window.cancelAnimationFrame(trackAnimationRef.current as number);
 
-    trackAnimationRef.current = requestAnimationFrame(() => {
-      const { clientHeight, scrollHeight, trackHeight } = memoizedProps.current;
-      const ratio = el.scrollTop / (scrollHeight - clientHeight);
+    trackAnimationRef.current = window.requestAnimationFrame(() => {
+      const { clientHeight, scrollHeight, trackHeight } = memoizedProps.current as MemoizedProps;
+      const ratio = element.scrollTop / (scrollHeight - clientHeight);
       const y = ratio * (clientHeight - trackHeight);
       track.style.transform = `translateY(${y}px)`;
     });
   }, [scrollerRef, scrollRatio]);
 
   const moveTrack = useCallback(
-    e => {
-      const el = scrollerRef.current;
-      let moveAnimation;
-      let lastPageY = e.pageY;
-      let lastScrollTop = el.scrollTop;
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const element = scrollerRef.current;
+      if (!element) return;
+      let moveAnimation: number;
+      let lastPageY = event.pageY;
+      let lastScrollTop = element.scrollTop;
 
       setIsDraggingTrack(true);
 
-      const drag = ({ pageY }) => {
-        cancelAnimationFrame(moveAnimation);
-        moveAnimation = requestAnimationFrame(() => {
+      const drag = (_event: MouseEvent) => {
+        const { pageY } = _event;
+        window.cancelAnimationFrame(moveAnimation);
+        moveAnimation = window.requestAnimationFrame(() => {
           const delta = pageY - lastPageY;
           lastScrollTop += delta / scrollRatio;
           lastPageY = pageY;
-          el.scrollTop = lastScrollTop;
+          element.scrollTop = lastScrollTop;
         });
       };
 
@@ -130,13 +147,13 @@ export default function useCustomScroller(
     [scrollerRef, scrollRatio],
   );
 
-  const wrapperProps = {
+  const getWrapperProps = () => ({
     style: {
       marginLeft: `-${SCROLLBAR_WIDTH}px`,
     },
-  };
+  });
 
-  const scrollerProps = {
+  const getScrollerProps = () => ({
     ref: scrollerRef,
     onScroll: disabled ? undefined : onScroll,
     style: {
@@ -144,10 +161,10 @@ export default function useCustomScroller(
       padding: `0 ${SCROLLBAR_WIDTH}px 0 0`,
       width: `calc(100% + ${OS_SCROLLBAR_WIDTH}px)`,
     },
-  };
+  });
 
-  const trackProps = {
-    ref: trackRef,
+  const getTrackProps = () => ({
+    ref: trackRef as React.MutableRefObject<HTMLDivElement>,
     onMouseDown: disabled ? undefined : moveTrack,
     style: {
       right: isDraggingTrack ? 1 : undefined,
@@ -156,7 +173,7 @@ export default function useCustomScroller(
       opacity: isDraggingTrack ? 1 : undefined,
       display: disabled || scrollRatio === 1 ? 'none' : undefined,
     },
-  };
+  });
 
-  return [wrapperProps, scrollerProps, trackProps];
+  return { getWrapperProps, getScrollerProps, getTrackProps };
 }
