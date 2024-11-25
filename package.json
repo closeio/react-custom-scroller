@@ -6,15 +6,20 @@
   "license": "MIT",
   "repository": "closeio/react-custom-scroller",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
+  "module": "dist/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "engines": {
     "node": ">=8",
     "npm": ">=5"
   },
   "scripts": {
-    "build": "rollup -c",
-    "start": "rollup -c -w",
+    "build": "tsup src/index.tsx",
+    "start": "tsup src/index.tsx --watch",
     "prepare": "pnpm build",
     "deploy": "cd example && pnpm i && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
   },
@@ -28,6 +33,7 @@
     "@svgr/rollup": "^4.3.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "autoprefixer": "^10.4.20",
     "cross-env": "^6.0.3",
     "eslint": "^6.5.1",
     "eslint-config-prettier": "^6.4.0",
@@ -35,15 +41,11 @@
     "eslint-plugin-react": "^7.16.0",
     "eslint-plugin-react-hooks": "^2.1.2",
     "gh-pages": "^2.1.1",
+    "postcss": "^8.4.49",
+    "postcss-modules": "^6.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "rollup": "^1.25.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.0",
-    "rollup-plugin-postcss": "^2.0.3",
-    "rollup-plugin-url": "^3.0.0",
+    "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
   "files": [
