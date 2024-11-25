@@ -1,22 +1,14 @@
 {
   "files": {
-    "main.css": "/react-custom-scroller/static/css/main.e9ef0149.chunk.css",
-    "main.js": "/react-custom-scroller/static/js/main.819545ae.chunk.js",
-    "main.js.map": "/react-custom-scroller/static/js/main.819545ae.chunk.js.map",
-    "runtime-main.js": "/react-custom-scroller/static/js/runtime-main.e24cc151.js",
-    "runtime-main.js.map": "/react-custom-scroller/static/js/runtime-main.e24cc151.js.map",
-    "static/js/2.084da2c4.chunk.js": "/react-custom-scroller/static/js/2.084da2c4.chunk.js",
-    "static/js/2.084da2c4.chunk.js.map": "/react-custom-scroller/static/js/2.084da2c4.chunk.js.map",
+    "main.css": "/react-custom-scroller/static/css/main.3b05c2dd.css",
+    "main.js": "/react-custom-scroller/static/js/main.292d254b.js",
+    "static/media/logo.svg": "/react-custom-scroller/static/media/logo.59983a57cb9b78622104c5df7e62d25d.svg",
     "index.html": "/react-custom-scroller/index.html",
-    "precache-manifest.65f0c06a5542d0419daf441ad0d8e8c1.js": "/react-custom-scroller/precache-manifest.65f0c06a5542d0419daf441ad0d8e8c1.js",
-    "service-worker.js": "/react-custom-scroller/service-worker.js",
-    "static/css/main.e9ef0149.chunk.css.map": "/react-custom-scroller/static/css/main.e9ef0149.chunk.css.map",
-    "static/media/logo.svg": "/react-custom-scroller/static/media/logo.d0a24d1a.svg"
+    "main.3b05c2dd.css.map": "/react-custom-scroller/static/css/main.3b05c2dd.css.map",
+    "main.292d254b.js.map": "/react-custom-scroller/static/js/main.292d254b.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.e24cc151.js",
-    "static/js/2.084da2c4.chunk.js",
-    "static/css/main.e9ef0149.chunk.css",
-    "static/js/main.819545ae.chunk.js"
+    "static/css/main.3b05c2dd.css",
+    "static/js/main.292d254b.js"
   ]
 }
