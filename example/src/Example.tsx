@@ -1,6 +1,5 @@
-import React from 'react';
-
 import CustomScroller from 'react-custom-scroller';
+import 'react-custom-scroller/index.css';
 
 import styles from './Example.module.css';
 

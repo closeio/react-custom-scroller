@@ -4,20 +4,25 @@
   "version": "0.0.0",
   "license": "MIT",
   "private": true,
-  "dependencies": {
-    "react-custom-scroller": "./..",
-    "react-scripts": "^3.2.0"
-  },
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
-    "prepare": "yarn build"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "prepare": "pnpm build"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not op_mini all"
-  ]
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-custom-scroller": "2.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "globals": "^15.11.0",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.10"
+  }
 }

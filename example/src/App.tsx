@@ -1,5 +1,3 @@
-import React from 'react';
-
 import Example from './Example';
 
 import logo from './logo.svg';
