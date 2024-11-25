@@ -1,17 +1,25 @@
 {
   "name": "react-custom-scroller",
-  "version": "2.0.0-rc",
+  "version": "2.0.0",
   "description": "Super simple React component for creating a custom scrollbar cross-browser and cross-devices",
   "author": "Vitor Buzinaro <vitor@close.com>",
   "license": "MIT",
   "repository": "closeio/react-custom-scroller",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
-    }
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./index.css": "./dist/index.css"
   },
   "engines": {
     "node": ">=8",
@@ -24,7 +32,6 @@
     "deploy": "cd example && pnpm i && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
   },
   "peerDependencies": {
-    "prop-types": "^15.5.4",
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
   },
@@ -42,9 +49,6 @@
     "eslint-plugin-react-hooks": "^2.1.2",
     "gh-pages": "^2.1.1",
     "postcss": "^8.4.49",
-    "postcss-modules": "^6.0.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   },
