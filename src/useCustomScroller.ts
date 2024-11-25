@@ -1,3 +1,4 @@
+import type { MouseEvent as ReactMouseEvent, MutableRefObject } from 'react';
 import { useLayoutEffect, useRef, useState, useCallback } from 'react';
 
 /**
@@ -25,31 +26,28 @@ const OS_SCROLLBAR_WIDTH = (() => {
  */
 const SCROLLBAR_WIDTH = OS_SCROLLBAR_WIDTH || 20;
 
-/**
- * Ported from Vitor's SimpleScrollbar library (vanilla JS):
- * https://github.com/buzinas/simple-scrollbar
- * @param {React.ReactNode} content Used as a dependency to re-run the effect
- * @param {React.MutableRefObject} [customRef]
- * @param {Object} [options={}]
- * @param {boolean} [options.disabled]
- */
 export default function useCustomScroller(
-  content,
-  customRef,
-  { disabled } = {},
+  customRef: MutableRefObject<HTMLDivElement | null> | undefined,
+  { disabled }: { disabled: boolean } = { disabled: false },
 ) {
   const [scrollRatio, setScrollRatio] = useState(1);
   const [isDraggingTrack, setIsDraggingTrack] = useState(false);
 
-  const ref = useRef();
+  const ref = useRef<HTMLDivElement>(null);
   const scrollerRef = customRef || ref;
-  const trackRef = useRef();
-  const trackAnimationRef = useRef();
-  const memoizedProps = useRef({});
+  const trackRef = useRef<HTMLDivElement>(null);
+  const trackAnimationRef = useRef(0);
+  const memoizedProps = useRef<{
+    clientHeight: number;
+    scrollHeight: number;
+    trackHeight: number;
+  }>();
 
   useLayoutEffect(() => {
     const el = scrollerRef.current;
-    let scrollbarAnimation;
+    if (!el) return;
+
+    let scrollbarAnimation: number;
 
     const updateScrollbar = () => {
       cancelAnimationFrame(scrollbarAnimation);
@@ -59,7 +57,7 @@ export default function useCustomScroller(
         memoizedProps.current = {
           clientHeight,
           scrollHeight,
-          trackHeight: trackRef.current.clientHeight,
+          trackHeight: trackRef.current?.clientHeight ?? 0,
         };
       });
     };
@@ -71,13 +69,14 @@ export default function useCustomScroller(
       cancelAnimationFrame(scrollbarAnimation);
       window.removeEventListener('resize', updateScrollbar);
     };
-  }, [scrollerRef, content]);
+  }, [scrollerRef]);
 
   useLayoutEffect(() => {
     if (!disabled) return;
     const el = scrollerRef.current;
+    if (!el) return;
 
-    const onWheel = e => e.preventDefault();
+    const onWheel = (e: WheelEvent) => e.preventDefault();
     el.addEventListener('wheel', onWheel, { passive: false });
 
     return () => {
@@ -90,9 +89,12 @@ export default function useCustomScroller(
     const el = scrollerRef.current;
     const track = trackRef.current;
 
+    if (!el || !track) return;
+
     cancelAnimationFrame(trackAnimationRef.current);
 
     trackAnimationRef.current = requestAnimationFrame(() => {
+      if (!memoizedProps.current) return;
       const { clientHeight, scrollHeight, trackHeight } = memoizedProps.current;
       const ratio = el.scrollTop / (scrollHeight - clientHeight);
       const y = ratio * (clientHeight - trackHeight);
@@ -101,15 +103,17 @@ export default function useCustomScroller(
   }, [scrollerRef, scrollRatio]);
 
   const moveTrack = useCallback(
-    e => {
+    (e: ReactMouseEvent<HTMLDivElement>) => {
       const el = scrollerRef.current;
-      let moveAnimation;
+      if (!el) return;
+
+      let moveAnimation: number;
       let lastPageY = e.pageY;
       let lastScrollTop = el.scrollTop;
 
       setIsDraggingTrack(true);
 
-      const drag = ({ pageY }) => {
+      const drag = ({ pageY }: MouseEvent) => {
         cancelAnimationFrame(moveAnimation);
         moveAnimation = requestAnimationFrame(() => {
           const delta = pageY - lastPageY;
@@ -158,5 +162,5 @@ export default function useCustomScroller(
     },
   };
 
-  return [wrapperProps, scrollerProps, trackProps];
+  return [wrapperProps, scrollerProps, trackProps] as const;
 }

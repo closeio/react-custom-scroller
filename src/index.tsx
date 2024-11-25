@@ -1,17 +1,27 @@
-import React, { forwardRef } from 'react';
-import PropTypes from 'prop-types';
+import type { HTMLAttributes, ReactNode } from 'react';
+import { forwardRef } from 'react';
 
 import useCustomScroller from './useCustomScroller';
 
 import styles from './index.module.css';
 
-const cx = (...args) => args.filter(Boolean).join(' ');
+const cx = (...args: (string | undefined | boolean)[]) =>
+  args.filter(Boolean).join(' ');
 
-const CustomScroller = forwardRef(
-  ({ scrollDisabled, className, innerClassName, children, ...props }, ref) => {
+type CustomScrollerProps = {
+  scrollDisabled?: boolean;
+  className?: string;
+  innerClassName?: string;
+  children: ReactNode;
+} & HTMLAttributes<HTMLDivElement>;
+
+const CustomScroller = forwardRef<HTMLDivElement, CustomScrollerProps>(
+  (
+    { scrollDisabled = false, className, innerClassName, children, ...props },
+    ref,
+  ) => {
     const [wrapperProps, scrollerProps, trackProps] = useCustomScroller(
-      children,
-      ref,
+      ref !== null && 'current' in ref ? ref : undefined,
       { disabled: scrollDisabled },
     );
 
@@ -27,13 +37,6 @@ const CustomScroller = forwardRef(
     );
   },
 );
-
-CustomScroller.propTypes = {
-  scrollDisabled: PropTypes.bool,
-  innerClassName: PropTypes.string,
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
 
 CustomScroller.displayName = 'CustomScroller';
 
