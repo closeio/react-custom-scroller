@@ -62,12 +62,32 @@ export default function useCustomScroller(
       });
     };
 
+    // Whenever scroller and its children resizes, update scrollbar
+    const resizeObserver = new ResizeObserver(updateScrollbar);
+    const observeScroller = () => {
+      resizeObserver.observe(el);
+      for (const node of el.children) {
+        resizeObserver.observe(node);
+      }
+    };
+    observeScroller();
+
+    // Whenever children is added/removed, re-observe resizes, update scrollbar
+    const mutationObserver = new MutationObserver(() => {
+      resizeObserver.disconnect();
+      observeScroller();
+      updateScrollbar();
+    });
+    mutationObserver.observe(el, { childList: true, subtree: true });
+
     window.addEventListener('resize', updateScrollbar);
     updateScrollbar();
 
     return () => {
       cancelAnimationFrame(scrollbarAnimation);
       window.removeEventListener('resize', updateScrollbar);
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
     };
   }, [scrollerRef]);
 
