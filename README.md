@@ -28,6 +28,7 @@ yarn add react-custom-scroller
 ```jsx
 import React from 'react';
 import CustomScroller from 'react-custom-scroller';
+import 'react-custom-scroller/dist/index.css';
 
 const MyScrollableDiv = () => (
   <CustomScroller>Content goes here.</CustomScroller>
