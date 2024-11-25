@@ -17,8 +17,8 @@
     "test:watch": "react-scripts test --env=jsdom",
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "prepare": "yarn build",
-    "deploy": "cd example && yarn && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
+    "prepare": "pnpm build",
+    "deploy": "cd example && pnpm i && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
   },
   "peerDependencies": {
     "prop-types": "^15.5.4",
