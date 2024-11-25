@@ -31,7 +31,7 @@
     "build": "tsup src/index.tsx",
     "start": "tsup src/index.tsx --watch",
     "prepare": "pnpm build",
-    "deploy": "cd example && pnpm i && gh-pages -d build -u \"github-actions-bot <support+actions@github.com>\""
+    "deploy": "cd example && pnpm i && gh-pages -d dist -u \"github-actions-bot <support+actions@github.com>\""
   },
   "peerDependencies": {
     "react": ">=16.8.0",
