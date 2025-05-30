@@ -1,6 +1,6 @@
 {
   "name": "react-custom-scroller",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Super simple React component for creating a custom scrollbar cross-browser and cross-devices",
   "author": "Vitor Buzinaro <vitor@close.com>",
   "license": "MIT",
