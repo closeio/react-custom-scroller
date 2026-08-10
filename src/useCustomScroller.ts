@@ -1,10 +1,12 @@
-import type { MouseEvent as ReactMouseEvent, MutableRefObject } from 'react';
-import { useLayoutEffect, useRef, useState, useCallback } from 'react';
+import type { MutableRefObject, MouseEvent as ReactMouseEvent } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+
+const DEFAULT_SCROLLBAR_WIDTH = 20
 
 /**
  * We use a negative right on the content to hide original OS scrollbars
  */
-const OS_SCROLLBAR_WIDTH = (() => {
+const OS_SCROLLBAR_WIDTH = typeof window === 'undefined' ? DEFAULT_SCROLLBAR_WIDTH : (() => {
   const outer = document.createElement('div');
   const inner = document.createElement('div');
   outer.style.overflow = 'scroll';
@@ -24,7 +26,7 @@ const OS_SCROLLBAR_WIDTH = (() => {
  * We need this for OSs that automatically hide the scrollbar (so the offset
  * doesn't change in such case). Eg: macOS with "Automatically based on mouse".
  */
-const SCROLLBAR_WIDTH = OS_SCROLLBAR_WIDTH || 20;
+const SCROLLBAR_WIDTH = OS_SCROLLBAR_WIDTH || DEFAULT_SCROLLBAR_WIDTH;
 
 export default function useCustomScroller(
   customRef: MutableRefObject<HTMLDivElement | null> | undefined,
