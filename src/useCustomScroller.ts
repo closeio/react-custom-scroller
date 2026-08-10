@@ -1,19 +1,12 @@
 import type { MutableRefObject, MouseEvent as ReactMouseEvent } from 'react';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-/**
- * We need this for OSs that automatically hide the scrollbar (so the offset
- * doesn't change in such case). Eg: macOS with "Automatically based on mouse".
- */
-const DEFAULT_SCROLLBAR_WIDTH = 20;
-
-let cachedOSScrollbarWidth: number | undefined;
+const DEFAULT_SCROLLBAR_WIDTH = 20
 
 /**
- * We use a negative right on the content to hide original OS scrollbars.
- * Client-only — must run inside an effect, not at module scope.
+ * We use a negative right on the content to hide original OS scrollbars
  */
-function measureOSScrollbarWidth(): number {
+const OS_SCROLLBAR_WIDTH = typeof window === 'undefined' ? DEFAULT_SCROLLBAR_WIDTH : (() => {
   const outer = document.createElement('div');
   const inner = document.createElement('div');
   outer.style.overflow = 'scroll';
@@ -27,23 +20,13 @@ function measureOSScrollbarWidth(): number {
   document.body.removeChild(outer);
 
   return scrollbarWidth;
-}
+})();
 
-/** Measures once, cached for every instance; skips re-measuring on remount. */
-function useOSScrollbarWidth(): number {
-  const [osScrollbarWidth, setOSScrollbarWidth] = useState(
-    cachedOSScrollbarWidth ?? DEFAULT_SCROLLBAR_WIDTH,
-  );
-
-  useLayoutEffect(() => {
-    if (cachedOSScrollbarWidth !== undefined) return;
-
-    cachedOSScrollbarWidth = measureOSScrollbarWidth();
-    setOSScrollbarWidth(cachedOSScrollbarWidth);
-  }, []);
-
-  return osScrollbarWidth;
-}
+/**
+ * We need this for OSs that automatically hide the scrollbar (so the offset
+ * doesn't change in such case). Eg: macOS with "Automatically based on mouse".
+ */
+const SCROLLBAR_WIDTH = OS_SCROLLBAR_WIDTH || DEFAULT_SCROLLBAR_WIDTH;
 
 export default function useCustomScroller(
   customRef: MutableRefObject<HTMLDivElement | null> | undefined,
@@ -51,9 +34,6 @@ export default function useCustomScroller(
 ) {
   const [scrollRatio, setScrollRatio] = useState(1);
   const [isDraggingTrack, setIsDraggingTrack] = useState(false);
-
-  const osScrollbarWidth = useOSScrollbarWidth();
-  const scrollbarWidth = osScrollbarWidth || DEFAULT_SCROLLBAR_WIDTH;
 
   const ref = useRef<HTMLDivElement>(null);
   const scrollerRef = customRef || ref;
@@ -178,7 +158,7 @@ export default function useCustomScroller(
 
   const wrapperProps = {
     style: {
-      marginLeft: `-${scrollbarWidth}px`,
+      marginLeft: `-${SCROLLBAR_WIDTH}px`,
     },
   };
 
@@ -186,9 +166,9 @@ export default function useCustomScroller(
     ref: scrollerRef,
     onScroll: disabled ? undefined : onScroll,
     style: {
-      right: `-${scrollbarWidth}px`,
-      padding: `0 ${scrollbarWidth}px 0 0`,
-      width: `calc(100% + ${osScrollbarWidth}px)`,
+      right: `-${SCROLLBAR_WIDTH}px`,
+      padding: `0 ${SCROLLBAR_WIDTH}px 0 0`,
+      width: `calc(100% + ${OS_SCROLLBAR_WIDTH}px)`,
     },
   };
 
